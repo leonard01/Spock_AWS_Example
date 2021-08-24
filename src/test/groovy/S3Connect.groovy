@@ -19,8 +19,8 @@ class S3Connect {
     S3Connect(){
 
         AWSCredentials credentials = new BasicAWSCredentials(
-                "AKIA2YVRLFYRHVM6J2SY",
-                "1j+7HcmFcvUD3hxKeAy40MqW48nm2KIywebnh6l2"
+                "aaaaaaaaa",  //keys not supplied in public repo
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaa"
         );
         s3client = new AmazonS3Client(credentials);
     }
