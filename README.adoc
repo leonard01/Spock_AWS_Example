@@ -1,64 +1,50 @@
-[.float-group]
---
-image::https://img.shields.io/badge/License-Apache%202.0-blue.svg[link=https://github.com/spockframework/spock/blob/master/LICENSE,float=left]
-image::https://img.shields.io/github/checks-status/spockframework/spock-example/master.svg?label=Build[link=https://github.com/spockframework/spock-example/actions?query=workflow%3A%22CI+Builds%22+branch%3Amaster,float=left]
-image::https://badges.gitter.im/spockframework/spock.svg[link=https://gitter.im/spockframework/spock?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge,float=left]
---
-
-== Spock Framework Example Project
+Spock AWS Example Tests
 
 
-The purpose of this project is to help you get started with Spock. The project includes several example specifications and build scripts for Ant, Gradle, and Maven. It also makes it easy to create an Eclipse or IDEA project, allowing you to run the example specs from within your IDE.
+Issues Found
+Attempt to upload large number of files:
+queuing numbers of files to process seems to cause errors in lamda function -connection also times out when trying to upload lots of files
 
-All three builds (Ant, Gradle, Maven) will automatically download all required dependencies, compile the project, and finally run the example specs. The Gradle build goes one step further by bootstrapping itself, alleviating the need to have a build tool preinstalled.
+Wrong File location for errored files:
+invalid/missing fields arent being sent to error folder
 
-=== Prerequisites
-
-- JDK 8 or higher
-- Maven use `mvnw` wrapper
-- Gradle use `gradlew` wrapper
-
-NOTE: This example shows the usage of Spock 2.0, which uses the JUnit Platform. If you want to see how to get Spock 1.x with JUnit 4 up and running see the https://github.com/spockframework/spock-example/tree/spock-1.x[Spock-1.x] Branch.
-
-=== Building with Gradle
-Type:
-
-    ./gradlew clean test
-
-Downloaded files (including the Gradle distribution itself) will be stored in the Gradle user home directory (typically *user_home*`/.gradle`).
-
-=== Building with Maven
-Type:
-
-    ./mvnw clean test
-
-Downloaded files will be stored in the local Maven repository (typically *user_home*`/.m2/repository`).
-
-=== Creating an Eclipse project
-
-Install the https://projects.eclipse.org/projects/tools.buildship[Buildship plugin] if you want to use gradle as build tool.
-
-=== Creating an IDEA project
-Just open the project directory with Intelli IDEA and it should auto-detect the project settings.
-
-=== Further Resources
+Tech/languages/approach
+Spock - I have always found spock to give a good balance between abstraction and exposing QA's to the code logic. Cucumber (for example)
+abstracts far too much code away by default resulting in QA's being too detached from the underlying code (they only look at it when something
+fails).  Spock's readability is generally very good - much better than Junit.
+Groovy - I always write my automation with the mindset of making it understandable for the next person coming along. In my experience it can be
+challenging for QA's who have mainly performed manual testing to start coding - java/groovy is (in my opinion) the easiest OO language to pickup.
+Structure - Helper classes and methods used where appropriate - there is a fine line between making things understandable for another QA and hiding
+logic away. Proper commenting helps.
 
 
-* https://spockframework.org[Spock homepage]
-* https://meetspock.appspot.com[Spock web console]
-* https://docs.spockframework.org/[Main documentation]
-* https://stackoverflow.com/questions/tagged/spock[Spock on Stackoverflow]
-* https://gitter.im/spockframework/spock[Spock Chat]
-* https://github.com/spockframework/spock/discussions[Discussion group]
-* https://issues.spockframework.org[Issue tracker]
-* https://twitter.com/spockframework[Spock on Twitter]
-* https://gradle.org[Gradle homepage]
-* https://groovy-lang.org/[Groovy homepage]
-* https://maven.apache.org[Maven homepage]
+Further Work -
+Encryption of any secrets (eg aws keys)
 
-If you have any comments or questions, please direct them to the Spock discussion group. We appreciate all feedback!
+Automate testing of empty fields for each element
 
-Happy spec'ing!
+Remove hard coded sleeps (can we stream aws logs to check for file creation?)
 
-The Spock Framework Team
+Count number of occurrences of string in local csv to compare against json from s3 (see 'Upload Large Valid File' test)
 
+Check code for exception states and ensure they are all covered by a test - when writing tests i make sure to go through the code to look for
+any exceptions that can be triggered - i will speak to the developer to consider non happy path and non functional testing.
+
+Boundary Testing - Upper values to be tested and automated
+
+Exploratory Testing - Testing as many variations of csv files as possible
+
+Performance Testing - Load testing required for lambda function
+
+Retrieving files from processed/error outbucket - the files are named with timestamp making grabbing them more difficult. As a (poor) workaround I delete
+files between test runs and used a method to grab files that are there (files added in the test) - a new method to check timestamp and grab relevant files
+(problematic as function takes a few seconds so timestamp is impossible to know) - Access to logs should expose file name making this much easier.
+
+Possibly create a method to create csv file programmatically  - might not be viable due to large amount of arguments required for various fields
+
+Create a gradle task to run tests from terminal and in ci/cd pipeline
+
+Most testers only care about testing error code/exceptions and not the log message itself - understandable as these change and then automation can fail.
+I prefer to keep the log messages in while the number of tests are manageable.
+
+Test different file types - ensure only csv files are processed
